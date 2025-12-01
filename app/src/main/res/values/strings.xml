@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">HomeGallery</string>
+    <string name="loading">Loading</string>
+    <string name="loading_failed">Loading Failed</string>
 </resources>
