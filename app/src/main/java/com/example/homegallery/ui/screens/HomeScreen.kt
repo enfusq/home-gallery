@@ -48,7 +48,13 @@ fun LoadingScreen(modifier: Modifier = Modifier) {
 @Composable
 fun ResultScreen(images: List<Image>, modifier: Modifier = Modifier) {
     LazyVerticalGrid(
-        columns = GridCells.Fixed(2)
+        columns = GridCells.Fixed(2),
+        contentPadding = PaddingValues(
+            start = 5.dp,
+            top = 5.dp,
+            bottom = 5.dp,
+            end = 5.dp
+        )
     ) {
         items(
             items = images,
@@ -57,7 +63,13 @@ fun ResultScreen(images: List<Image>, modifier: Modifier = Modifier) {
             AsyncImage(
                 model = image.imagePath,
                 contentDescription = image.originalName,
-                placeholder = painterResource(R.drawable.placeholder)
+                modifier = Modifier
+                    .padding(
+                        start = 5.dp,
+                        top = 5.dp,
+                        bottom = 5.dp,
+                        end = 5.dp
+                    )
             )
         }
     }

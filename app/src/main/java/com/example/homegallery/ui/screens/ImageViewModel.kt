@@ -32,9 +32,10 @@ class ImageViewModel : ViewModel() {
             imageUiState = ImageUiState.Loading
             imageUiState = try {
                 val listResult = ImageApi.retrofitService.getImages()
-                Log.d("API", listResult.toString())
                 ImageUiState.Success(listResult)
             } catch (e: HttpException) {
+                ImageUiState.Error
+            } catch (e: IOException) {
                 ImageUiState.Error
             }
         }
