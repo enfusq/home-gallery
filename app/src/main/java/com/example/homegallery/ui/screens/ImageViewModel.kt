@@ -1,12 +1,15 @@
 package com.example.homegallery.ui.screens
 
-import android.util.Log
+import android.app.Application
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
 import coil3.network.HttpException
+import com.example.homegallery.data.NetworkImageRepository
 import com.example.homegallery.model.Image
 import com.example.homegallery.network.ImageApi
 import kotlinx.coroutines.launch
@@ -19,9 +22,11 @@ sealed interface ImageUiState {
     object Error : ImageUiState
 }
 
-class ImageViewModel : ViewModel() {
+class ImageViewModel(application: Application) : AndroidViewModel(application) {
     var imageUiState: ImageUiState by mutableStateOf(ImageUiState.Loading)
         private set
+
+    private val imageRepository = NetworkImageRepository(ImageApi.retrofitService)
 
     init {
         getImages()
@@ -31,12 +36,22 @@ class ImageViewModel : ViewModel() {
         viewModelScope.launch {
             imageUiState = ImageUiState.Loading
             imageUiState = try {
-                val listResult = ImageApi.retrofitService.getImages()
-                ImageUiState.Success(listResult)
+                ImageUiState.Success(imageRepository.getImages())
             } catch (e: HttpException) {
                 ImageUiState.Error
             } catch (e: IOException) {
                 ImageUiState.Error
+            }
+        }
+    }
+
+    fun uploadImage(imageUri: Uri) {
+        viewModelScope.launch {
+            try {
+                imageRepository.uploadImage(application, imageUri)
+                getImages()
+            } catch (e: Exception) {
+                imageUiState = ImageUiState.Error
             }
         }
     }

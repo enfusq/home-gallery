@@ -2,6 +2,7 @@
 
 package com.example.homegallery.ui
 
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,18 +10,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -31,9 +27,16 @@ import com.example.homegallery.ui.screens.ImageViewModel
 
 @Composable
 fun HomeGalleryApp() {
+    val imageViewModel: ImageViewModel = viewModel()
 
     Scaffold(
-        bottomBar = { HomeGalleryBottomAppBar() },
+        bottomBar = {
+            HomeGalleryBottomAppBar(
+                onImageSelected = { uri ->
+                    imageViewModel.uploadImage(uri)
+                }
+            )
+        },
         modifier = Modifier
             .statusBarsPadding()
             .navigationBarsPadding()
@@ -51,14 +54,19 @@ fun HomeGalleryApp() {
 }
 
 @Composable
-fun HomeGalleryBottomAppBar(modifier: Modifier = Modifier) {
+fun HomeGalleryBottomAppBar(
+    modifier: Modifier = Modifier,
+    onImageSelected: (Uri) -> Unit
+) {
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
-    ) { uri -> }
+    ) { uri: Uri? ->
+        uri?.let(onImageSelected)
+    }
 
     BottomAppBar(
         modifier = modifier
-            .height(64.dp),
+            .height(56.dp),
         actions = {
             IconButton(onClick = { launcher.launch("image/*") }) {
                 Icon(
