@@ -44,7 +44,6 @@ fun HomeGalleryApp() {
         Surface(
             modifier = Modifier.fillMaxSize()
         ) {
-            val imageViewModel: ImageViewModel = viewModel()
             HomeScreen(
                 imageUiState = imageViewModel.imageUiState,
                 contentPadding = it
