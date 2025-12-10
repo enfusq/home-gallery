@@ -13,5 +13,7 @@ data class Image (
     @SerialName(value = "original_name")
     val originalName: String,
     @SerialName(value = "taken_at")
-    val takenAt: String
+    val takenAt: String,
+    val width: Int,
+    val height: Int
 )

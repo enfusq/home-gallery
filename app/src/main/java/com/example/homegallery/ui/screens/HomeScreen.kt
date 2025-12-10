@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,6 +17,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -94,8 +98,11 @@ fun ResultScreen(
                     AsyncImage(
                         model = image.imagePath,
                         contentDescription = image.originalName,
+                        contentScale = ContentScale.Crop,
+                        alignment = Alignment.Center,
                         modifier = Modifier
                             .fillMaxSize()
+                            .aspectRatio(image.width.toFloat() / image.height.toFloat())
                     )
                 }
             }
@@ -116,15 +123,41 @@ fun SingleImageScreen(
             .clickable(onClick = onDismiss),
         contentAlignment = Alignment.Center
     ) {
-        AsyncImage(
-            model = image.imagePath,
-            contentDescription = image.originalName,
-            contentScale = ContentScale.Fit,
+        Column (
             modifier = Modifier
                 .padding(16.dp)
-                .fillMaxWidth()
-                .clickable(enabled = false, onClick = {})
-        )
+        ) {
+            AsyncImage(
+                model = image.imagePath,
+                contentDescription = image.originalName,
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .clickable(enabled = false, onClick = {})
+                    .fillMaxWidth()
+            )
+
+            Row(
+                modifier = Modifier
+                    .background(Color.DarkGray)
+                    .fillMaxWidth()
+            ) {
+                IconButton( onClick = { /* TODO: Download function */ } ) {
+                    Icon(
+                        painter = painterResource(R.drawable.download_24dp),
+                        contentDescription = stringResource(R.string.download_icon),
+                        tint = Color.LightGray
+                    )
+                }
+                IconButton( onClick = { /* TODO: Delete function */ } ) {
+                    Icon(
+                        painter = painterResource(R.drawable.delete_24dp),
+                        contentDescription = stringResource(R.string.delete_icon),
+                        tint = Color.LightGray
+                    )
+                }
+            }
+        }
+
     }
 }
 

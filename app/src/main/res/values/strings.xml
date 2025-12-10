@@ -3,4 +3,6 @@
     <string name="loading">Loading</string>
     <string name="loading_failed">Loading Failed</string>
     <string name="add_icon">Add Image</string>
+    <string name="delete_icon">Delete Image</string>
+    <string name="download_icon">Download Image</string>
 </resources>
