@@ -3,6 +3,7 @@
 package com.example.homegallery.ui
 
 import android.net.Uri
+import android.widget.ImageView
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
@@ -46,6 +47,9 @@ fun HomeGalleryApp() {
         ) {
             HomeScreen(
                 imageUiState = imageViewModel.imageUiState,
+                selectedImage = imageViewModel.selectedImage,
+                onImageClicked = { imageViewModel.onImageClicked(it) },
+                onDismissImage = { imageViewModel.onDismissImage() },
                 contentPadding = it
             )
         }

@@ -26,10 +26,21 @@ class ImageViewModel(application: Application) : AndroidViewModel(application) {
     var imageUiState: ImageUiState by mutableStateOf(ImageUiState.Loading)
         private set
 
+    var selectedImage by mutableStateOf<Image?>(null)
+        private set
+
     private val imageRepository = NetworkImageRepository(ImageApi.retrofitService)
 
     init {
         getImages()
+    }
+
+    fun onImageClicked(image: Image) {
+        selectedImage = image
+    }
+
+    fun onDismissImage() {
+        selectedImage = null
     }
 
     fun getImages() {
