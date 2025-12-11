@@ -2,6 +2,7 @@ package com.example.homegallery.ui.screens
 
 import android.app.Application
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -60,6 +61,19 @@ class ImageViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             try {
                 imageRepository.uploadImage(application, imageUri)
+                getImages()
+            } catch (e: Exception) {
+                imageUiState = ImageUiState.Error
+            }
+        }
+    }
+
+    fun deleteImage(image: Image) {
+        Log.d("DELETE", "Called")
+        viewModelScope.launch {
+            try {
+                imageRepository.deleteImage(image.id)
+                onDismissImage()
                 getImages()
             } catch (e: Exception) {
                 imageUiState = ImageUiState.Error

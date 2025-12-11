@@ -16,6 +16,7 @@ import java.util.Locale
 interface ImageRepository {
     suspend fun getImages(): List<Image>
     suspend fun uploadImage(context: Context, imageUri: Uri): Image
+    suspend fun deleteImage(imageId: Int)
 }
 
 class NetworkImageRepository(
@@ -44,6 +45,10 @@ class NetworkImageRepository(
         val takenAtPart = takenAtString.toRequestBody("text/plain".toMediaTypeOrNull())
 
         return imageApiService.uploadImage(body, takenAtPart)
+    }
+
+    override suspend fun deleteImage(imageId: Int) {
+        imageApiService.deleteImage(imageId)
     }
 
     private fun getExifDateTime(context: Context, imageUri: Uri): String {

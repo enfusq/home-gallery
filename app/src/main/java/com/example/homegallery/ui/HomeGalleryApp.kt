@@ -50,6 +50,7 @@ fun HomeGalleryApp() {
                 selectedImage = imageViewModel.selectedImage,
                 onImageClicked = { imageViewModel.onImageClicked(it) },
                 onDismissImage = { imageViewModel.onDismissImage() },
+                onDeleteImage = { imageViewModel.deleteImage(it) },
                 contentPadding = it
             )
         }
