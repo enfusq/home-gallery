@@ -9,6 +9,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
+import coil3.ImageLoader
 import coil3.network.HttpException
 import com.example.homegallery.data.NetworkImageRepository
 import com.example.homegallery.model.Image
@@ -30,7 +31,16 @@ class ImageViewModel(application: Application) : AndroidViewModel(application) {
     var selectedImage by mutableStateOf<Image?>(null)
         private set
 
-    private val imageRepository = NetworkImageRepository(ImageApi.retrofitService)
+    var downloadSuccess by mutableStateOf(false)
+        private set
+
+    private val imageLoader = ImageLoader.Builder(application).build()
+
+    private val imageRepository = NetworkImageRepository(
+        imageApiService = ImageApi.retrofitService,
+        context = application,
+        imageLoader = imageLoader
+    )
 
     init {
         getImages()
@@ -75,6 +85,20 @@ class ImageViewModel(application: Application) : AndroidViewModel(application) {
                 imageRepository.deleteImage(image.id)
                 onDismissImage()
                 getImages()
+            } catch (e: Exception) {
+                imageUiState = ImageUiState.Error
+            }
+        }
+    }
+
+    fun downloadImage(image: Image) {
+        Log.d("DOWNLOAD", "Called")
+        viewModelScope.launch {
+            try {
+                imageRepository.downloadImageToGallery(image)
+                    .onSuccess { downloadSuccess = true}
+                    .onFailure { imageUiState = ImageUiState.Error }
+
             } catch (e: Exception) {
                 imageUiState = ImageUiState.Error
             }

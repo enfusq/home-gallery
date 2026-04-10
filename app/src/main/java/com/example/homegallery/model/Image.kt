@@ -14,6 +14,8 @@ data class Image (
     val originalName: String,
     @SerialName(value = "taken_at")
     val takenAt: String,
+    @SerialName(value = "taken_at_unix")
+    val takenAtUnix: Long,
     val width: Int,
     val height: Int
 )

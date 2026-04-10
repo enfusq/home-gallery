@@ -29,6 +29,9 @@ private const val BASE_URL = "http://10.0.2.2:8000/api/"
         @GET("images")
         suspend fun getImages(): List<Image>
 
+        @GET("images/{id}")
+        suspend fun getImage(@Path("id") imageId: Int): Image
+
         @Multipart
         @POST("images")
         suspend fun uploadImage(

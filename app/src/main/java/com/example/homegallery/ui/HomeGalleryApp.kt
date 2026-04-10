@@ -51,6 +51,7 @@ fun HomeGalleryApp() {
                 onImageClicked = { imageViewModel.onImageClicked(it) },
                 onDismissImage = { imageViewModel.onDismissImage() },
                 onDeleteImage = { imageViewModel.deleteImage(it) },
+                onDownloadImage = {imageViewModel.downloadImage(it)},
                 contentPadding = it
             )
         }
