@@ -40,6 +40,7 @@ fun HomeScreen(
     onDismissImage: () -> Unit,
     onDeleteImage: (Image) -> Unit,
     onDownloadImage: (Image) -> Unit,
+    downloadSuccess: Boolean,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
@@ -62,7 +63,8 @@ fun HomeScreen(
                 image = selectedImage,
                 onDismiss = onDismissImage,
                 onDelete = onDeleteImage,
-                onDownload = onDownloadImage
+                onDownload = onDownloadImage,
+                downloadSuccess = downloadSuccess
             )
         }
     }
@@ -120,6 +122,7 @@ fun SingleImageScreen(
     onDismiss: () -> Unit,
     onDelete: (Image) -> Unit,
     onDownload: (Image) -> Unit,
+    downloadSuccess: Boolean,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -147,9 +150,12 @@ fun SingleImageScreen(
                     .background(Color.DarkGray)
                     .fillMaxWidth()
             ) {
-                IconButton( onClick = { onDownload(image) } ) {
+                IconButton( onClick = { if (!downloadSuccess) onDownload(image) } ) {
                     Icon(
-                        painter = painterResource(R.drawable.download_24dp),
+                        painter = painterResource(
+                            if (downloadSuccess) R.drawable.check_24dp
+                            else R.drawable.download_24dp
+                        ),
                         contentDescription = stringResource(R.string.download_icon),
                         tint = Color.LightGray
                     )
