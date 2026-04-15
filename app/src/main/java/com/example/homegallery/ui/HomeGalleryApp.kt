@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -31,8 +32,8 @@ fun HomeGalleryApp() {
     val imageViewModel: ImageViewModel = viewModel()
 
     Scaffold(
-        bottomBar = {
-            HomeGalleryBottomAppBar(
+        floatingActionButton = {
+            HomeGalleryFab(
                 onImageSelected = { uri ->
                     imageViewModel.uploadImage(uri)
                 }
@@ -60,7 +61,7 @@ fun HomeGalleryApp() {
 }
 
 @Composable
-fun HomeGalleryBottomAppBar(
+fun HomeGalleryFab(
     modifier: Modifier = Modifier,
     onImageSelected: (Uri) -> Unit
 ) {
@@ -70,16 +71,10 @@ fun HomeGalleryBottomAppBar(
         uri?.let(onImageSelected)
     }
 
-    BottomAppBar(
-        modifier = modifier
-            .height(56.dp),
-        actions = {
-            IconButton(onClick = { launcher.launch("image/*") }) {
-                Icon(
-                    painter = painterResource(R.drawable.add_24dp),
-                    contentDescription = stringResource(R.string.add_icon)
-                )
-            }
-        }
-    )
+    FloatingActionButton(onClick = { launcher.launch("image/*") }) {
+        Icon(
+            painter = painterResource(R.drawable.add_24dp),
+            contentDescription = stringResource(R.string.add_icon)
+        )
+    }
 }
