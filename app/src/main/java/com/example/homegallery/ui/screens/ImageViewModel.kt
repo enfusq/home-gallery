@@ -60,8 +60,13 @@ class ImageViewModel(application: Application) : AndroidViewModel(application) {
             imageUiState = try {
                 ImageUiState.Success(imageRepository.getImages())
             } catch (e: HttpException) {
+                Log.e("API", e.toString())
                 ImageUiState.Error
             } catch (e: IOException) {
+                Log.e("API", e.toString())
+                ImageUiState.Error
+            } catch (e: Exception) {
+                Log.e("API", e.toString())
                 ImageUiState.Error
             }
         }
@@ -73,26 +78,26 @@ class ImageViewModel(application: Application) : AndroidViewModel(application) {
                 imageRepository.uploadImage(application, imageUri)
                 getImages()
             } catch (e: Exception) {
+                Log.e("API", e.toString())
                 imageUiState = ImageUiState.Error
             }
         }
     }
 
     fun deleteImage(image: Image) {
-        Log.d("DELETE", "Called")
         viewModelScope.launch {
             try {
                 imageRepository.deleteImage(image.id)
                 onDismissImage()
                 getImages()
             } catch (e: Exception) {
+                Log.e("API", e.toString())
                 imageUiState = ImageUiState.Error
             }
         }
     }
 
     fun downloadImage(image: Image) {
-        Log.d("DOWNLOAD", "Called")
         viewModelScope.launch {
             try {
                 imageRepository.downloadImageToGallery(image)
@@ -100,6 +105,7 @@ class ImageViewModel(application: Application) : AndroidViewModel(application) {
                     .onFailure { imageUiState = ImageUiState.Error }
 
             } catch (e: Exception) {
+                Log.e("API", e.toString())
                 imageUiState = ImageUiState.Error
             }
         }
