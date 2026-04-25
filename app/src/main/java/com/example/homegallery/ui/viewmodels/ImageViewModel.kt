@@ -1,4 +1,4 @@
-package com.example.homegallery.ui.screens
+package com.example.homegallery.ui.viewmodels
 
 import android.app.Application
 import android.net.Uri

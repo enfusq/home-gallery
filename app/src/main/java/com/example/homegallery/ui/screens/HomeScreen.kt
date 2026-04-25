@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.example.homegallery.R
 import com.example.homegallery.model.Image
+import com.example.homegallery.ui.viewmodels.ImageUiState
 
 @Composable
 fun HomeScreen(
