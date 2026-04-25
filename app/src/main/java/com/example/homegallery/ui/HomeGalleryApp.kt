@@ -3,6 +3,7 @@
 package com.example.homegallery.ui
 
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -11,25 +12,48 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.homegallery.R
 import com.example.homegallery.ui.screens.HomeScreen
 import com.example.homegallery.ui.screens.ImageViewModel
+import com.example.homegallery.ui.screens.UploadResult
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeGalleryApp() {
+    val snackBarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
     val imageViewModel: ImageViewModel = viewModel()
+    val context = LocalContext.current
 
     Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
         floatingActionButton = {
             HomeGalleryFab(
                 onImageSelected = { uri ->
-                    imageViewModel.uploadImage(uri)
+                    imageViewModel.uploadImage(uri) { result ->
+                        when (result) {
+                            is UploadResult.Success -> {
+                                scope.launch { snackBarHostState.showSnackbar("Image uploaded successfully") }
+                            }
+                            is UploadResult.AlreadyExists -> {
+                                scope.launch { snackBarHostState.showSnackbar("Image already exists") }
+                            }
+                            is UploadResult.Error -> {
+                                scope.launch { snackBarHostState.showSnackbar(result.message) }
+                            }
+                        }
+                    }
                 }
             )
         },

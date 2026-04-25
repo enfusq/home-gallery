@@ -24,6 +24,12 @@ sealed interface ImageUiState {
     object Error : ImageUiState
 }
 
+sealed class UploadResult {
+    data object Success : UploadResult()
+    data object AlreadyExists : UploadResult()
+    data class Error(val message: String) : UploadResult()
+}
+
 class ImageViewModel(application: Application) : AndroidViewModel(application) {
     var imageUiState: ImageUiState by mutableStateOf(ImageUiState.Loading)
         private set
@@ -72,14 +78,22 @@ class ImageViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun uploadImage(imageUri: Uri) {
+    fun uploadImage(imageUri: Uri, onResult: (UploadResult) -> Unit) {
         viewModelScope.launch {
             try {
                 imageRepository.uploadImage(application, imageUri)
                 getImages()
+                onResult(UploadResult.Success)
+            } catch (e: retrofit2.HttpException) {
+                if (e.code() == 409) {
+                    onResult(UploadResult.AlreadyExists)
+                } else {
+                    Log.e("API", "HTTP Error: ${e.code()}")
+                    onResult(UploadResult.Error("Server error: ${e.code()}"))
+                }
             } catch (e: Exception) {
                 Log.e("API", e.toString())
-                imageUiState = ImageUiState.Error
+                onResult(UploadResult.Error(e.message ?: "Unknown error occurred"))
             }
         }
     }
