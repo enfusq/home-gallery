@@ -5,4 +5,7 @@
     <string name="add_icon">Add Image</string>
     <string name="delete_icon">Delete Image</string>
     <string name="download_icon">Download Image</string>
+    <string name="gallery">Gallery</string>
+    <string name="classic">Classic</string>
+    <string name="sync">Sync</string>
 </resources>
