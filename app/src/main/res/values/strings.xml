@@ -8,4 +8,11 @@
     <string name="gallery">Gallery</string>
     <string name="classic">Classic</string>
     <string name="sync">Sync</string>
+    <string name="back">Back</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete_confirm_title">Delete photo?</string>
+    <string name="delete_confirm_body">This cannot be undone.</string>
+    <string name="image_already_exists">Image already exists</string>
+    <string name="retry">Retry</string>
 </resources>

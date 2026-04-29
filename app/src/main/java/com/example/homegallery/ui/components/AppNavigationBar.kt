@@ -9,22 +9,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.example.homegallery.R
+import com.example.homegallery.ui.navigation.Screen
 
 @Composable
 fun HomeGalleryNavigationBar(
-    selectedTab: Int,
-    onTabSelected: (Int) -> Unit,
+    currentRoute: String?,
+    onRouteSelected: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     NavigationBar(modifier = modifier) {
         NavigationBarItem(
-            selected = selectedTab == 0,
-            onClick = { onTabSelected(0) },
+            selected = currentRoute == Screen.Gallery.route,
+            onClick = { onRouteSelected(Screen.Gallery.route) },
             label = { Text(stringResource(R.string.gallery)) },
             icon = {
                 Icon(
                     painter = painterResource(
-                        if (selectedTab == 0) R.drawable.auto_awesome_mosaic_filled_24dp
+                        if (currentRoute == Screen.Gallery.route) R.drawable.auto_awesome_mosaic_filled_24dp
                         else R.drawable.auto_awesome_mosaic_24dp
                     ),
                     contentDescription = stringResource(R.string.gallery)
@@ -32,29 +33,29 @@ fun HomeGalleryNavigationBar(
             }
         )
         NavigationBarItem(
-            selected = selectedTab == 1,
-            onClick = { onTabSelected(1) },
+            selected = currentRoute == Screen.Classic.route,
+            onClick = { onRouteSelected(Screen.Classic.route) },
             label = { Text(stringResource(R.string.classic)) },
             icon = {
                 Icon(
                     painter = painterResource(
-                        if (selectedTab == 1) R.drawable.photo_library_filled_24dp
+                        if (currentRoute == Screen.Classic.route) R.drawable.photo_library_filled_24dp
                         else R.drawable.photo_library_24dp
                     ),
                     contentDescription = stringResource(R.string.classic)
                 )
             }
         )
-        NavigationBarItem(
-            selected = selectedTab == 2,
-            onClick = { onTabSelected(2) },
-            label = { Text(stringResource(R.string.sync)) },
-            icon = {
-                Icon(
-                    painter = painterResource(R.drawable.sync_24dp),
-                    contentDescription = stringResource(R.string.sync)
-                )
-            }
-        )
+//        NavigationBarItem(
+//            selected = currentRoute == Screen.Sync.route,
+//            onClick = { onRouteSelected(Screen.Sync.route) },
+//            label = { Text(stringResource(R.string.sync)) },
+//            icon = {
+//                Icon(
+//                    painter = painterResource(R.drawable.sync_24dp),
+//                    contentDescription = stringResource(R.string.sync)
+//                )
+//            }
+//        )
     }
 }

@@ -3,12 +3,12 @@ package com.example.homegallery.data
 import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import android.provider.OpenableColumns
 import android.util.Log
 import androidx.exifinterface.media.ExifInterface
 import coil3.ImageLoader
@@ -50,6 +50,12 @@ class NetworkImageRepository(
     override suspend fun uploadImage(context: Context, imageUri: Uri): Image {
         val takenAtString = getExifDateTime(context, imageUri)
 
+        val filename = context.contentResolver
+            .query(imageUri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)
+            ?.use { cursor ->
+                if (cursor.moveToFirst()) cursor.getString(0) else null
+            } ?: "image.jpg"
+
         val inputStream = context.contentResolver.openInputStream(imageUri)
             ?: throw Exception("Couldn't open InputStream for given URI")
 
@@ -61,7 +67,7 @@ class NetworkImageRepository(
 
         val body = MultipartBody.Part.createFormData(
             name = "image",
-            filename = "image.jpg",
+            filename = filename,
             body = requestFile
         )
 
@@ -71,12 +77,14 @@ class NetworkImageRepository(
     }
 
     override suspend fun deleteImage(imageId: Int) {
+        Log.d("IMAGE", "Delete Called")
         imageApiService.deleteImage(imageId)
     }
 
     override suspend fun downloadImageToGallery(image: Image): Result<Uri> =
         withContext(Dispatchers.IO) {
             runCatching {
+                Log.d("IMAGE", "Download Called")
                 val request = ImageRequest.Builder(context)
                     .data(image.imagePath)
                     .allowHardware(false)
@@ -99,6 +107,7 @@ class NetworkImageRepository(
     }
 
     private fun saveViaMediaStore(bitmap: Bitmap, image: Image): Uri {
+        Log.d("IMAGE", "SaveViaMediaStore Called")
         val mimeType = when (image.originalName.substringAfterLast('.').lowercase()) {
             "jpg", "jpeg" -> "image/jpeg"
             "png" -> "image/png"
@@ -139,6 +148,7 @@ class NetworkImageRepository(
     }
 
     private fun saveViaFileSystem(bitmap: Bitmap, fileName: String): Uri {
+        Log.d("IMAGE", "SaveViaFileSystem Called")
         val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
         val file = File(path, fileName)
 
@@ -165,7 +175,7 @@ class NetworkImageRepository(
                 }
             }
         } catch (e: Exception) {
-            Log.e("EXIF", "Failed to read EXIF from image")
+            Log.e("EXIF", e.toString())
         }
 
         val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
